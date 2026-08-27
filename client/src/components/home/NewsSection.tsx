@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { api, imageUrl } from '@/lib/api';
+import { api, asArray, imageUrl } from '@/lib/api';
 import { SectionHeading, EmptyState, Spinner } from '@/components/ui';
 
 type Article = {
@@ -18,7 +18,9 @@ export default function NewsSection() {
 
   useEffect(() => {
     api<Article[] | { articles: Article[] }>('/api/news')
-      .then((d: any) => setArticles(Array.isArray(d) ? d : d?.articles ?? []))
+      .then((d: any) =>
+        setArticles(Array.isArray(d) ? d : asArray<Article>(d?.articles))
+      )
       .catch(() => setArticles([]));
   }, []);
 

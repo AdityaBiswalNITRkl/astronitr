@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { api } from '@/lib/api';
+import { api, asArray } from '@/lib/api';
 import { Spinner, EmptyState, Tag, Alert, inputStyle, neonButton } from '@/components/ui';
 
 type Blog = {
@@ -22,7 +22,7 @@ export default function BlogsAdmin() {
 
   const load = () => {
     api<Blog[]>('/api/blogs/pending/all')
-      .then(setBlogs)
+      .then((d) => setBlogs(asArray(d)))
       .catch(() => setBlogs([]));
   };
 

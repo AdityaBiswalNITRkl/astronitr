@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { api, imageUrl } from '@/lib/api';
+import { api, asArray, imageUrl } from '@/lib/api';
 import { Spinner, EmptyState, Tag, Alert, inputStyle, neonButton } from '@/components/ui';
 
 type Event = {
@@ -27,8 +27,8 @@ export default function EventsAdmin() {
 
   const load = () => {
     api<Event[]>('/api/events/all?includePending=true')
-      .then(setEvents)
-      .catch(() => api<Event[]>('/api/events').then(setEvents).catch(() => setEvents([])));
+      .then((d) => setEvents(asArray(d)))
+      .catch(() => api<Event[]>('/api/events').then((d) => setEvents(asArray(d))).catch(() => setEvents([])));
   };
 
   useEffect(load, []);

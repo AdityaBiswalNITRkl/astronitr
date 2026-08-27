@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { api, imageUrl } from '@/lib/api';
+import { api, asArray, imageUrl } from '@/lib/api';
 import { Spinner, EmptyState, Tag, Alert, inputStyle, neonButton } from '@/components/ui';
 
 type N = {
@@ -25,7 +25,7 @@ export default function NewslettersAdmin() {
   const [msg, setMsg] = useState('');
 
   const load = () => {
-    api<N[]>('/api/newsletters').then(setItems).catch(() => setItems([]));
+    api<N[]>('/api/newsletters').then((d) => setItems(asArray(d))).catch(() => setItems([]));
   };
 
   useEffect(load, []);

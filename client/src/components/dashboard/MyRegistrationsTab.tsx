@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { api } from '@/lib/api';
+import { api, asArray } from '@/lib/api';
 import { Spinner, EmptyState, Tag } from '@/components/ui';
 
 type Reg = {
@@ -17,7 +17,7 @@ export default function MyRegistrationsTab() {
 
   useEffect(() => {
     api<Reg[]>('/api/registrations/me')
-      .then(setRegs)
+      .then((d) => setRegs(asArray(d)))
       .catch(() => setRegs([]));
   }, []);
 

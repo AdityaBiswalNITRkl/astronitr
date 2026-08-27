@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import PageShell, { PageTitle } from '@/components/PageShell';
-import { api, imageUrl } from '@/lib/api';
+import { api, asArray, imageUrl } from '@/lib/api';
 import { Spinner, EmptyState } from '@/components/ui';
 
 type Member = {
@@ -30,7 +30,7 @@ export default function TeamPage() {
 
   useEffect(() => {
     api<Member[]>('/api/team')
-      .then(setTeam)
+      .then((d) => setTeam(asArray<Member>(d)))
       .catch(() => setTeam([]));
   }, []);
 

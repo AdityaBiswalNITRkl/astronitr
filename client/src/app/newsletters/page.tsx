@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import PageShell, { PageTitle } from '@/components/PageShell';
-import { api, imageUrl } from '@/lib/api';
+import { api, asArray, imageUrl } from '@/lib/api';
 import { Spinner, EmptyState, Tag } from '@/components/ui';
 
 type Newsletter = {
@@ -20,7 +20,7 @@ export default function NewslettersPage() {
 
   useEffect(() => {
     api<Newsletter[]>('/api/newsletters')
-      .then(setItems)
+      .then((d) => setItems(asArray<Newsletter>(d)))
       .catch(() => setItems([]));
   }, []);
 

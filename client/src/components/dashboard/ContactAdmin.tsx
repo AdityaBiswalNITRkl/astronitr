@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { api } from '@/lib/api';
+import { api, asArray } from '@/lib/api';
 import { Spinner, EmptyState, Tag, Alert } from '@/components/ui';
 
 type Msg = {
@@ -19,7 +19,7 @@ export default function ContactAdmin() {
   const [err, setErr] = useState('');
 
   const load = () => {
-    api<Msg[]>('/api/contact').then(setMsgs).catch((e) => {
+    api<Msg[]>('/api/contact').then((d) => setMsgs(asArray(d))).catch((e) => {
       setErr(e.message);
       setMsgs([]);
     });

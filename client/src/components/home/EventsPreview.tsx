@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { api, imageUrl } from '@/lib/api';
+import { api, asArray, imageUrl } from '@/lib/api';
 import { useAuth } from '@/context/AuthContext';
 import { SectionHeading, EmptyState, Tag, Spinner } from '@/components/ui';
 
@@ -22,11 +22,11 @@ export default function EventsPreview() {
 
   useEffect(() => {
     api<EventItem[]>('/api/events')
-      .then(setEvents)
+      .then((d) => setEvents(asArray<EventItem>(d)))
       .catch(() => setEvents([]));
   }, []);
 
-  const upcoming = (events ?? [])
+  const upcoming = asArray<EventItem>(events)
     .filter((e) => new Date(e.date).getTime() >= Date.now() - 86400000)
     .slice(0, 3);
 

@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { api } from '@/lib/api';
+import { api, asArray } from '@/lib/api';
 import { Spinner, EmptyState, Tag, Alert, inputStyle, neonButton } from '@/components/ui';
 
 type U = { _id: string; name: string; email: string; role: string; isApproved?: boolean };
@@ -13,9 +13,9 @@ export default function UsersAdmin() {
   const [msg, setMsg] = useState('');
 
   const load = () => {
-    api<U[]>('/api/users').then(setUsers).catch((e) => { setErr(e.message); setUsers([]); });
+    api<U[]>('/api/users').then((d) => setUsers(asArray(d))).catch((e) => { setErr(e.message); setUsers([]); });
     api<U[]>('/api/admin/pending-members')
-      .then(setPending)
+      .then((d) => setPending(asArray(d)))
       .catch(() => {});
   };
 

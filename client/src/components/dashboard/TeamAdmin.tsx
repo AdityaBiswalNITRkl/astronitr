@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { api, imageUrl } from '@/lib/api';
+import { api, asArray, imageUrl } from '@/lib/api';
 import { Spinner, EmptyState, Tag, Alert, inputStyle, neonButton } from '@/components/ui';
 
 type M = {
@@ -40,8 +40,8 @@ export default function TeamAdmin() {
 
   const load = () => {
     api<M[]>('/api/team/all')
-      .then(setTeam)
-      .catch(() => api<M[]>('/api/team').then(setTeam).catch(() => setTeam([])));
+      .then((d) => setTeam(asArray(d)))
+      .catch(() => api<M[]>('/api/team').then((d) => setTeam(asArray(d))).catch(() => setTeam([])));
   };
 
   useEffect(load, []);

@@ -4,7 +4,7 @@ import { use, useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import PageShell from '@/components/PageShell';
-import { api, imageUrl } from '@/lib/api';
+import { api, asArray, imageUrl } from '@/lib/api';
 import { useAuth } from '@/context/AuthContext';
 import { Spinner, Tag, Alert, inputStyle, neonButton } from '@/components/ui';
 
@@ -35,7 +35,7 @@ export default function BlogDetailPage() {
 
   const load = () => {
     api<Blog>(`/api/blogs/${id}`)
-      .then(setBlog)
+      .then((d: any) => setBlog(d && typeof d === 'object' && d._id ? d : null))
       .catch(() => setBlog(null))
       .finally(() => setLoading(false));
   };
@@ -86,7 +86,10 @@ export default function BlogDetailPage() {
       </PageShell>
     );
 
-  const liked = user && (blog.likes ?? []).includes(user._id);
+  const likes = asArray<string>(blog.likes);
+  const comments = asArray<Comment>(blog.comments);
+  const tags = asArray<string>(blog.tags);
+  const liked = !!user && likes.includes(user._id);
 
   return (
     <PageShell>
@@ -102,7 +105,7 @@ export default function BlogDetailPage() {
         )}
 
         <div className="flex gap-2 flex-wrap mb-4">
-          {(blog.tags ?? []).map((t) => (
+          {tags.map((t) => (
             <Tag key={t}>{t}</Tag>
           ))}
         </div>
@@ -128,7 +131,7 @@ export default function BlogDetailPage() {
         <div
           className="prose-blog leading-relaxed space-y-4"
           style={{ color: 'rgba(226,232,240,0.8)' }}
-          dangerouslySetInnerHTML={{ __html: blog.content }}
+          dangerouslySetInnerHTML={{ __html: blog.content ?? '' }}
         />
 
         {/* Likes */}
@@ -143,7 +146,7 @@ export default function BlogDetailPage() {
               background: liked ? 'rgba(162,0,255,0.1)' : 'rgba(0,240,255,0.06)',
             }}
           >
-            {liked ? '💖' : '🤍'} {(blog.likes ?? []).length} likes
+            {liked ? '💖' : '🤍'} {likes.length} likes
           </button>
           {!user && (
             <Link href="/login" className="text-xs tracking-widest uppercase" style={{ color: '#00f0ff' }}>
@@ -155,7 +158,7 @@ export default function BlogDetailPage() {
         {/* Comments */}
         <section className="mt-14">
           <h2 className="font-display text-xl font-bold mb-6" style={{ color: '#00f0ff' }}>
-            Transmission Log ({(blog.comments ?? []).length})
+            Transmission Log ({comments.length})
           </h2>
 
           {err && <div className="mb-4"><Alert kind="error">{err}</Alert></div>}
@@ -177,12 +180,12 @@ export default function BlogDetailPage() {
           )}
 
           <div className="space-y-4">
-            {(blog.comments ?? []).length === 0 && (
+            {comments.length === 0 && (
               <p className="text-sm" style={{ color: 'rgba(226,232,240,0.45)' }}>
                 No comments yet — be the first signal.
               </p>
             )}
-            {(blog.comments ?? []).map((c) => (
+            {comments.map((c) => (
               <div
                 key={c._id}
                 className="rounded-xl p-5"

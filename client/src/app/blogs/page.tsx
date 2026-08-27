@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import PageShell, { PageTitle } from '@/components/PageShell';
-import { api, imageUrl } from '@/lib/api';
+import { api, asArray, imageUrl } from '@/lib/api';
 import { Spinner, EmptyState, Tag } from '@/components/ui';
 
 type BlogItem = {
@@ -25,11 +25,11 @@ export default function BlogsPage() {
 
   useEffect(() => {
     api<BlogItem[]>('/api/blogs')
-      .then(setBlogs)
+      .then((d) => setBlogs(asArray<BlogItem>(d)))
       .catch(() => setBlogs([]));
   }, []);
 
-  const filtered = (blogs ?? []).filter((b) =>
+  const filtered = asArray<BlogItem>(blogs).filter((b) =>
     b.title?.toLowerCase().includes(search.toLowerCase())
   );
 

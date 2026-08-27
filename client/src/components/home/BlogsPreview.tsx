@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { api, imageUrl } from '@/lib/api';
+import { api, asArray, imageUrl } from '@/lib/api';
 import { SectionHeading, EmptyState, Spinner, Tag } from '@/components/ui';
 
 type BlogItem = {
@@ -22,7 +22,7 @@ export default function BlogsPreview() {
 
   useEffect(() => {
     api<BlogItem[]>('/api/blogs')
-      .then((d) => setBlogs((d ?? []).slice(0, 3)))
+      .then((d) => setBlogs(asArray<BlogItem>(d).slice(0, 3)))
       .catch(() => setBlogs([]));
   }, []);
 

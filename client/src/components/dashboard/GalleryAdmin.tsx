@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { api, imageUrl } from '@/lib/api';
+import { api, asArray, imageUrl } from '@/lib/api';
 import { Spinner, EmptyState, Tag, Alert, inputStyle, neonButton } from '@/components/ui';
 
 type Item = { _id: string; title: string; description?: string; image: string; isApproved?: boolean };
@@ -15,8 +15,8 @@ export default function GalleryAdmin() {
 
   const load = () => {
     api<Item[]>('/api/gallery/all')
-      .then(setItems)
-      .catch(() => api<Item[]>('/api/gallery').then(setItems).catch(() => setItems([])));
+      .then((d) => setItems(asArray(d)))
+      .catch(() => api<Item[]>('/api/gallery').then((d) => setItems(asArray(d))).catch(() => setItems([])));
   };
 
   useEffect(load, []);

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { api, imageUrl } from '@/lib/api';
+import { api, asArray, imageUrl } from '@/lib/api';
 import { SectionHeading, EmptyState, Spinner } from '@/components/ui';
 
 type GalleryItem = { _id: string; title: string; image: string };
@@ -12,7 +12,7 @@ export default function GalleryPreview() {
 
   useEffect(() => {
     api<GalleryItem[]>('/api/gallery')
-      .then((d) => setItems((d ?? []).slice(0, 6)))
+      .then((d) => setItems(asArray<GalleryItem>(d).slice(0, 6)))
       .catch(() => setItems([]));
   }, []);
 

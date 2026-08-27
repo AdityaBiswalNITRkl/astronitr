@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { api } from '@/lib/api';
+import { api, asArray } from '@/lib/api';
 import { Spinner, EmptyState, Tag, Alert, inputStyle, neonButton } from '@/components/ui';
 
 type Blog = {
@@ -25,7 +25,7 @@ export default function MyBlogsTab() {
 
   const load = () => {
     api<Blog[]>('/api/blogs/my/blogs')
-      .then(setBlogs)
+      .then((d) => setBlogs(asArray(d)))
       .catch(() => setBlogs([]));
   };
 
@@ -104,7 +104,7 @@ export default function MyBlogsTab() {
                 <div className="flex items-center gap-2">
                   <Tag>{b.status ?? 'pending'}</Tag>
                   <span className="text-xs" style={{ color: 'rgba(226,232,240,0.4)' }}>
-                    👁 {b.views ?? 0} · 💖 {(b.likes ?? []).length}
+                    👁 {b.views ?? 0} · 💖 {asArray(b.likes).length}
                   </span>
                 </div>
               </div>

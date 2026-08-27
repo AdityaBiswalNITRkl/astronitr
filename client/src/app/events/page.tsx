@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import PageShell, { PageTitle } from '@/components/PageShell';
-import { api, imageUrl } from '@/lib/api';
+import { api, asArray, imageUrl } from '@/lib/api';
 import { useAuth } from '@/context/AuthContext';
 import {
   SectionHeading,
@@ -36,7 +36,7 @@ export default function EventsPage() {
 
   const load = () => {
     api<EventItem[]>('/api/events')
-      .then(setEvents)
+      .then((d) => setEvents(asArray<EventItem>(d)))
       .catch(() => setEvents([]));
   };
 
@@ -46,7 +46,9 @@ export default function EventsPage() {
       api<any[]>('/api/registrations/me')
         .then((regs) =>
           setRegisteredIds(
-            (regs ?? []).map((r: any) => String(r?.event?._id ?? r?.event ?? r?._id))
+            asArray<any>(regs).map((r: any) =>
+              String(r?.event?._id ?? r?.event ?? r?._id)
+            )
           )
         )
         .catch(() => {});
@@ -71,7 +73,7 @@ export default function EventsPage() {
     }
   };
 
-  const filtered = (events ?? []).filter(
+  const filtered = asArray<EventItem>(events).filter(
     (e) => category === 'All' || e.category === category
   );
 

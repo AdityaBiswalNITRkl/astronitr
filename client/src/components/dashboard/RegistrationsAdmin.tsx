@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { api } from '@/lib/api';
+import { api, asArray } from '@/lib/api';
 import { Spinner, EmptyState, Tag, Alert, inputStyle } from '@/components/ui';
 
 type Event = { _id: string; title: string; date: string };
@@ -20,8 +20,8 @@ export default function RegistrationsAdmin() {
 
   useEffect(() => {
     api<Event[]>('/api/events/all?includePending=true')
-      .then(setEvents)
-      .catch(() => api<Event[]>('/api/events').then(setEvents).catch(() => setEvents([])));
+      .then((d) => setEvents(asArray(d)))
+      .catch(() => api<Event[]>('/api/events').then((d) => setEvents(asArray(d))).catch(() => setEvents([])));
   }, []);
 
   const loadRegs = (id: string) => {
@@ -31,7 +31,7 @@ export default function RegistrationsAdmin() {
       return;
     }
     api<Reg[]>(`/api/registrations/event/${id}`)
-      .then(setRegs)
+      .then((d) => setRegs(asArray(d)))
       .catch((e) => {
         setErr(e.message);
         setRegs([]);
@@ -66,7 +66,7 @@ export default function RegistrationsAdmin() {
         style={inputStyle}
       >
         <option value="">— Select an event —</option>
-        {(events ?? []).map((ev) => (
+        {asArray(events).map((ev) => (
           <option key={ev._id} value={ev._id}>
             {ev.title} ({new Date(ev.date).toLocaleDateString()})
           </option>

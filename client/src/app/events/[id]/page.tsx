@@ -3,7 +3,7 @@
 import { use, useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import PageShell from '@/components/PageShell';
-import { api, imageUrl } from '@/lib/api';
+import { api, asArray, imageUrl } from '@/lib/api';
 import { useAuth } from '@/context/AuthContext';
 import { Spinner, Tag, Alert, neonButton } from '@/components/ui';
 
@@ -27,7 +27,7 @@ export default function EventDetailPage() {
 
   useEffect(() => {
     api<EventItem>(`/api/events/${id}`)
-      .then(setEvent)
+      .then((d: any) => setEvent(d && typeof d === 'object' && d._id ? d : null))
       .catch(() => setEvent(null))
       .finally(() => setLoading(false));
 
@@ -35,7 +35,9 @@ export default function EventDetailPage() {
       api<any[]>('/api/registrations/me')
         .then((regs) =>
           setRegistered(
-            (regs ?? []).some((r: any) => String(r?.event?._id ?? r?.event) === String(id))
+            asArray<any>(regs).some(
+              (r: any) => String(r?.event?._id ?? r?.event) === String(id)
+            )
           )
         )
         .catch(() => {});

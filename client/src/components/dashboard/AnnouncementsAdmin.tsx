@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { api } from '@/lib/api';
+import { api, asArray } from '@/lib/api';
 import { Spinner, EmptyState, Tag, Alert, inputStyle, neonButton } from '@/components/ui';
 
 type A = { _id: string; title: string; description: string; pinned?: boolean; expiryDate?: string };
@@ -15,7 +15,7 @@ export default function AnnouncementsAdmin() {
   const [msg, setMsg] = useState('');
 
   const load = () => {
-    api<A[]>('/api/announcements').then(setItems).catch(() => setItems([]));
+    api<A[]>('/api/announcements').then((d) => setItems(asArray(d))).catch(() => setItems([]));
   };
 
   useEffect(load, []);

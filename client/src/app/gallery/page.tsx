@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import PageShell, { PageTitle } from '@/components/PageShell';
-import { api, imageUrl } from '@/lib/api';
+import { api, asArray, imageUrl } from '@/lib/api';
 import { Spinner, EmptyState } from '@/components/ui';
 
 type GalleryItem = { _id: string; title: string; description?: string; image: string };
@@ -13,7 +13,7 @@ export default function GalleryPage() {
 
   useEffect(() => {
     api<GalleryItem[]>('/api/gallery')
-      .then(setItems)
+      .then((d) => setItems(asArray<GalleryItem>(d)))
       .catch(() => setItems([]));
   }, []);
 
