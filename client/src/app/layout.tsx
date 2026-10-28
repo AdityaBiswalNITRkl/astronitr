@@ -3,6 +3,7 @@ import { Orbitron, Inter } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import { AuthProvider } from "@/context/AuthContext";
+import SpaceBackground from "@/components/SpaceBackground";
 
 const orbitron = Orbitron({
   variable: "--font-orbitron",
@@ -37,6 +38,7 @@ export default function RootLayout({
         style={{ background: "#050816", color: "#e2e8f0", fontFamily: "var(--font-inter), sans-serif" }}
       >
         <AuthProvider>
+          <SpaceBackground />
           <Navbar />
           {children}
         </AuthProvider>

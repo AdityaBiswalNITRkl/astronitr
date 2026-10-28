@@ -1,28 +1,10 @@
 'use client';
 
-import Galaxy from '@/components/Galaxy';
 import { ReactNode } from 'react';
 
 export default function PageShell({ children }: { children: ReactNode }) {
   return (
     <div className="relative min-h-screen">
-      <div className="fixed inset-0 z-[-1] bg-[#050816]">
-        <Galaxy
-          mouseRepulsion={true}
-          mouseInteraction={true}
-          density={1}
-          glowIntensity={0.6}
-          saturation={1}
-          hueShift={-40}
-          twinkleIntensity={0.4}
-          rotationSpeed={0.05}
-          repulsionStrength={2}
-          autoCenterRepulsion={0}
-          starSpeed={0.5}
-          speed={1}
-          transparent={true}
-        />
-      </div>
       <main className="relative z-10 pt-28 pb-20 px-4 sm:px-6">{children}</main>
     </div>
   );
